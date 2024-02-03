@@ -1,11 +1,11 @@
 import { load } from "cheerio";
-import { BASE_URL } from "../utils/index.js";
+import { BASE_URL, headers } from "../utils/index.js";
 import { default as Axios } from "axios";
 
 export const latestRelease = (req, res) => {
     let data = [];
 
-    Axios.get(BASE_URL)
+    Axios.get(BASE_URL, headers)
     .then((response) => {
         const $ = load(response.data);
         const element = $("#postbaru")

@@ -1,11 +1,11 @@
 import { load } from "cheerio";
 import { default as Axios } from "axios";
-import { BASE_URL, filterSpan, requestFailed } from "../utils/index.js";
+import { BASE_URL, filterSpan, headers, requestFailed } from "../utils/index.js";
 
 export const popularSeries = (req, res) => {
     let data = [];
 
-    Axios.get(BASE_URL)
+    Axios.get(BASE_URL,headers)
     .then((response) => {
         const $ = load(response.data);
         const element = $("div.kotakbatas")

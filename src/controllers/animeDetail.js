@@ -1,13 +1,13 @@
 import { load } from "cheerio";
 import { default as Axios } from "axios";
-import { BASE_URL, filterSpan, requestFailed } from "../utils/index.js";
+import { BASE_URL, filterSpan, headers, requestFailed } from "../utils/index.js";
 
 export const animeDetail = async (req, res) => {
     const slug = req.params.slug;
     const url = `${BASE_URL}/anime/${slug}`;
 
     try{
-        const response = await Axios.get(url);
+        const response = await Axios.get(url, headers);
         const $ = load(response.data);
         const mainElement = $("main.content");
         const bottomTitle = mainElement.find(".kotakseries .bottomtitle");

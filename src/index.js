@@ -1,14 +1,16 @@
 import express from 'express';
 import router from './routes/index.js';
 import cors from 'cors';
-import axios from 'axios';
 
 const app = express();
 const port = 3000;
 
-app.use(cors());
-axios.defaults.validateStatus = () => true;
-axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36';
+const corsOptions = {
+    origin: '*',
+    credentials: true
+}
+
+app.use(cors(corsOptions));
 
 app.use('/api', router)
 app.use('/', (req, res) => {

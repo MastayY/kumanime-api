@@ -1,11 +1,11 @@
 import { load } from "cheerio";
 import { default as Axios } from "axios";
-import { BASE_URL } from "../utils/index.js";
+import { BASE_URL, headers } from "../utils/index.js";
 
 export const schedule = (req, res) => {
     const url = `${BASE_URL}/jadwal-rilis`;
 
-    Axios.get(url)
+    Axios.get(url, headers)
     .then((response) => {
         const $ = load(response.data);
         const container = $("div.container");

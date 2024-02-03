@@ -1,5 +1,5 @@
 import { default as Axios } from "axios";
-import { BASE_URL, requestFailed } from "../utils/index.js"
+import { BASE_URL, headers, requestFailed } from "../utils/index.js"
 import { load } from "cheerio";
 
 
@@ -11,7 +11,7 @@ export const completedAnime = async (req, res) => {
     let animeData = [];
 
     try {
-        const response = await Axios.get(url);
+        const response = await Axios.get(url, headers);
         const $ = load(response.data);
         const mainElement = $(".result");
 
