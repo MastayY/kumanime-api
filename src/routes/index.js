@@ -1,14 +1,13 @@
 import { Router } from "express";
-import { animeDetail, latestRelease,episodeDetail, popularSeries, schedule, ongoingAnime, completedAnime, searchAnime } from "../controllers/index.js";
+import { animeDetail, latestRelease,episodeDetail, popularSeries, searchAnime, animeMovie } from "../controllers/index.js";
 
 const router = Router();
 
-router.get('/latest', latestRelease);
-router.get('/schedule', schedule);
+router.get('/latest/', latestRelease);
+router.get('/latest/page/:page', latestRelease);
 router.get('/popular', popularSeries);
-router.get('/ongoing', ongoingAnime);
-router.get('/completed', completedAnime);
-router.get('/completed/page/:page', completedAnime);
+router.get('/movie', animeMovie);
+router.get('/movie/page/:page', animeMovie);
 router.get('/anime/:slug', animeDetail);
 router.get('/episode/:slug', episodeDetail);
 router.get('/search/:query', searchAnime);

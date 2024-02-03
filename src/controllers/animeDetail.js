@@ -1,61 +1,51 @@
 import { load } from "cheerio";
 import { default as Axios } from "axios";
-import { BASE_URL, filterSpan, requestFailed } from "../utils/index.js";
+import { BASE_URL, requestFailed } from "../utils/index.js";
+
+const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip,deflate",
+}
 
 export const animeDetail = async (req, res) => {
     const slug = req.params.slug;
-    const url = `${BASE_URL}/anime/${slug}`;
-
-    try{
-        const response = await Axios.get(url);
+    const url = `${BASE_URL}/anime/${slug}/`;
+    const domainUrl = "https://anime-indo.biz";
+    
+    try {
+        const response = await Axios.get(url, {headers});
         const $ = load(response.data);
-        const mainElement = $("main.content");
-        const bottomTitle = mainElement.find(".kotakseries .bottomtitle");
+        const mainElement = $("div.detail");
 
         let animeData = {};
 
-        animeData.title = mainElement.find("h1.entry-title").text().replace(/^Nonton\s/, '');
-        animeData.alias = filterSpan(bottomTitle, "Synonyms:");
-        animeData.poster = mainElement.find(".poster > img").attr("src");
-        animeData.synopsis = mainElement.find(".entry-content > p").text();
-        animeData.status = mainElement.find(".extra > .statusseries").text();
-        animeData.total_episode = mainElement.find(".extra > .durasiseries").text();
-        animeData.season = mainElement.find(".extra > .dateseries > a").text();
-        animeData.rating = mainElement.find(".scoreseries > .nilaiseries").text();
-        animeData.type = mainElement.find(".scoreseries > .typeseries").text();
-        animeData.studios = filterSpan(bottomTitle, "Studios:");
-        animeData.duration = filterSpan(bottomTitle, "Duration:");
-        animeData.aired = filterSpan(bottomTitle, "Aired:");
-        animeData.trailer = mainElement.find(".rt > a.trailerbutton").attr("href");
+        animeData.title = mainElement.find("h2").text().replace(/^Nonton\s/, '');
+        animeData.poster = domainUrl + mainElement.find("img").attr("src");
+        animeData.synopsis = mainElement.find("p").text();
 
         let genreList = [];
-        mainElement.find(".tagline > a").each((i, el) => {
-            const genre_title = $(el).text();
-            const genre_slug = $(el).attr("href").match(/\/genres\/([^\/]+)/)[1]
-
-            genreList.push({
-                genre_title,
-                genre_slug
-            });
+        mainElement.find("li").each((i, el) => {
+            const genreTitle = $(el).find("a").text();
+            genreList.push(genreTitle);
         });
 
         let epsList = [];
-        mainElement.find("ul.misha_posts_wrap2 > li").each((i, el) => {
-            const eps_title = $(el).find("span.t1 > a").text();
-            const eps_slug = $(el).find("span.t1 > a").attr("href").match(/\/([^\/]+)\/$/)[1];
-            const eps_date = $(el).find("span.t3").text();
+        $("#content-wrap > div.ngirix > div:nth-child(4) > div > a").each((i, el) => {
+                epsList.push({
+                    eps_title: `Episode${$(el).text()}`,
+                    eps_slug: $(el).attr("href").match(/\/([^/]+)\/$/)[1],
+                });
+            }
+        );
 
-            epsList.push({
-                eps_title,
-                eps_slug,
-                eps_date
-            });
+        animeData.genres = genreList;
+        animeData.episodes = epsList;
+
+        res.status(200).json({
+            status: "success",
+            animeData,
         });
-
-        animeData.genre_list = genreList;
-        animeData.eps_list = epsList;
-
-        res.json(animeData);
 
     } catch(err) {
         requestFailed(req, res, err);

@@ -1,41 +1,39 @@
 import { load } from "cheerio";
-import { BASE_URL, requestFailed } from "../utils/index.js";
+import { BASE_URL, getData, requestFailed } from "../utils/index.js";
 import { default as Axios } from "axios";
+
+const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip,deflate"
+}
 
 export const episodeDetail = async (req, res) => {
     const slug = req.params.slug;
-    const url = `${BASE_URL}/${slug}`;
+    const url = `${BASE_URL}/${slug}/`;
+    const domainUrl = "https://anime-indo.biz";
 
     try {
-        const response = await Axios.get(url);
+        const response = await Axios.get(url, {headers});
         const $ = load(response.data);
-        const mainElement = $("main.content");
+        const mainElement = $(".detail");
 
         let eps_detail = {};
+        // const RawStreamUrl = domainUrl + $(".server:contains('B-TUBE')").attr("data-video");
+        // const streamUrl = await getData(RawStreamUrl);
 
-        eps_detail.title = mainElement.find("h1.entry-title").text();
-        eps_detail.thumb = mainElement.find(".featuredimgs > img").attr("src");
-        eps_detail.updated = mainElement.find("time.updated").text();
-        eps_detail.stream_url = mainElement.find("#videoku iframe").attr("src");
-        eps_detail.prev_eps_slug = mainElement.find("#navigation-episode .nvs:first > a").attr("href")?.match(/\/([^\/]+)\/$/)?.[1] || "-";
-        eps_detail.anime_slug = mainElement.find("#navigation-episode .nvs:nth-child(2) > a").attr("href")?.match(/\/anime\/([^\/]+)/)?.[1] || "-";
-        eps_detail.next_eps_slug = mainElement.find("#navigation-episode .nvs:nth-child(3) > a").attr("href")?.match(/\/([^\/]+)\/$/)?.[1] || "-";
+        eps_detail.title = mainElement.find("strong").text();
+        eps_detail.poster = domainUrl + mainElement.find("img").attr("src");
+        eps_detail.stream_url = domainUrl + $(".server:contains('B-TUBE')").attr("data-video") || $(".server:contains('GDRIVE')").attr("data-video");
+        eps_detail.synopsis = mainElement.find("p").text();
+        eps_detail.anime_slug = $(".navi > a:contains('Semua')").attr("href")?.match(/\/anime\/([^/]+)\//)?.[1] || "-";
+        eps_detail.next_eps_slug = $(".navi > a:contains('Next')").attr("href")?.match(/\/([^\/]+)\/$/)?.[1] || "-";
+        eps_detail.prev_eps_slug = $(".navi > a:contains('Prev')").attr("href")?.match(/\/([^\/]+)/)?.[1] || "-";
 
-        let downloadLinks = [];
-        mainElement.find(".listlink > a").each((i, el) => {
-            const linkTitle = $(el).text();
-            const link = $(el).attr("href");
-
-            downloadLinks.push({
-                linkTitle,
-                link
-            });
+        res.status(200).json({
+            status: "success",
+            eps_detail,
         });
-
-        eps_detail.download_links = downloadLinks;
-
-
-        res.json(eps_detail);
     } catch (e) {
         requestFailed(req, res, e);
     }
