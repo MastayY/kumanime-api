@@ -1,10 +1,14 @@
 # Kumanime API
-
-Streaming dan download Anime subtitle Indonesia
-
-# Sumber:
-
-https://nontonanimeid.org
+<p align="center">
+  <a href="https://github.com/LuckyIndraEfendi">
+    <img src="https://avatars.githubusercontent.com/u/93984625?v=4" alt="Mastay" width="120" >
+  </a>
+  
+  <h3 align="center">Kumanime API</h3>
+  <p align="center">
+    <samp>Rest API gratis untuk mendapatkan data anime serta link streaming anime dari website <a href="https://anime-indo.biz">AnimeIndo</a></samp>
+  </p>
+</p>
 
 # Instalasi
 
@@ -27,15 +31,15 @@ npm run dev
 - Server akan berjalan di http://localhost:3000
 
 # Routes
+Contoh menggunakan library axios
+Endpoint : http://localhost:3000/api
 
 | Endpoint              | Params          | Description                |
 | --------------------- | --------------- | -------------------------- |
 | /latest               | -               | Latest Release             |
 | /popular              | -               | Popular Series             |
-| /ongoing              | -               | Ongoing Anime              |
-| /completed/page/:page | page            | default page: 1            |
-| /schedule             | -               | Jadwal Tayang              |
-| /search/:query        | query           | Search Anime               |
+| /movie/page/:page     | :page           | Anime Movie                |
+| /search/:query        | :query          | Search Anime               |
 | /anime/:slug          | :slug           | Anime details              |
 | /episode/:slug        | :slug           | Detail Episode             |
 
