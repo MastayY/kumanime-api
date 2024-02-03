@@ -31,7 +31,6 @@ npm run dev
 - Server akan berjalan di http://localhost:3000
 
 # Routes
-Contoh menggunakan library axios
 Endpoint : http://localhost:3000/api
 
 | Endpoint              | Params          | Description                |
