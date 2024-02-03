@@ -1,6 +1,7 @@
 import { default as Axios } from "axios";
+import { load } from "cheerio";
 
-export const BASE_URL = 'https://nontonanimeid.org';
+export const BASE_URL = 'https://185.224.82.193';
 
 export const requestFailed = (req,res,err)=>{
     res.status(502).send({
@@ -9,38 +10,15 @@ export const requestFailed = (req,res,err)=>{
     })
 }
 
-export const filterSpan = (parent, content) => {
-    const res = parent
-        .find(`span:contains(${content})`)
-        .text()
-        .replace(`${content} `, "");
-    return res;
-};
-
 export const getData = async (url) => {
     try {
         const response = await Axios.get(url);
         const $ = load(response.data);
 
-        // Use a single regex pattern to capture the file URL
-        const regex = /'file'\s*:\s*'([^']*)'|"file"\s*:\s*"(.*?)"/;
-        const match = $.html().match(regex);
+        const streamUrl = $("video > source").attr("src");
 
-        if (match && (match[1] || match[2])) {
-            const fileUrl = match[1] || match[2];
-    
-            return fileUrl;
-        }
-
-        return "-";
+        return streamUrl;
     } catch (error) {
-        return "-";
+        return error.message;
     }
 };
-
-export const headers = {
-    "Referer": BASE_URL,
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-    "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6",
-    "Accept-Encoding": "gzip,deflate",
-}
