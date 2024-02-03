@@ -18,11 +18,9 @@ app.use('/', (req, res) => {
     res.json({
         author: "MastayY",
         routes: {
-            latest: "/latest",
-            popular: "/popular",
-            schedule: "/schedule",
-            ongoing: "/ongoing",
-            completed: "/completed/page/:page",
+            latestAnime: "/latest",
+            popularAnime: "/popular",
+            movieAnime: "/movie/page/:page",
             search: "/search/:query",
             detailAnime: "/anime/:slug",
             detailEpisode: "/episode/:slug",
