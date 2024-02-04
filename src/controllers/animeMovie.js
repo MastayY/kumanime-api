@@ -22,7 +22,7 @@ export const animeMovie = async (req, res) => {
         $("#content-wrap > div.menu > table").each((i, el) => {
             data.push({
                 title: $(el).find(" tbody > tr > td.videsc > a").text(),
-                poster: $(el).find("img").attr("data-original"),
+                poster: $(el).find("img").attr("src"),
                 slug: $(el).find(" tbody > tr > td.vithumb > a").attr("href").match(/\/anime\/([^/]+)\//)?.[1],
                 type: $(el).find(" tbody > tr > td.videsc > span:nth-child(3)").text(),
                 synopsis: $(el).find(" tbody > tr > td.videsc > p").text(),
