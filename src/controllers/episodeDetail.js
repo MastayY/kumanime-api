@@ -26,7 +26,7 @@ export const episodeDetail = async (req, res) => {
         eps_detail.poster = domainUrl + mainElement.find("img").attr("src");
 
         const streamUrl = $(".server:nth-child(1)").attr("data-video") || $(".server:nth-child(2)").attr("data-video") || "-";
-        eps_detail.stream_url = streamUrl.startsWith("//gdrive") ? streamUrl : domainUrl + streamUrl || streamUrl.startsWith("https://") ? streamUrl : domainUrl + streamUrl;
+        eps_detail.stream_url = streamUrl.startsWith("//gdrive") ? streamUrl : streamUrl.startsWith("https://") ? streamUrl : domainUrl + streamUrl;
         eps_detail.synopsis = mainElement.find("p").text();
         eps_detail.anime_slug = $(".navi > a:contains('Semua')").attr("href")?.match(/\/anime\/([^/]+)\//)?.[1] || "-";
         eps_detail.next_eps_slug = $(".navi > a:contains('Next')").attr("href")?.match(/\/([^\/]+)\/$/)?.[1] || "-";
