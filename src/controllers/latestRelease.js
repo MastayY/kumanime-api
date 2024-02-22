@@ -17,7 +17,9 @@ export const latestRelease = async (req, res) => {
     let data = [];
 
     try{
-        const response = await Axios.get(url, {headers});
+        const response = await Axios.get(url, {
+            headers
+        });
         const $ = load(response.data);
 
         $("#content-wrap > div.ngiri > div.menu > a").each(function (i, el) {
